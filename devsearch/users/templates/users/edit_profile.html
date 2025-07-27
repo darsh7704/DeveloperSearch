@@ -1,0 +1,51 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<!-- Main Section -->
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="{% url 'user-profile' pk=request.user.profile.id %}">
+                <i class="im im-angle-left"></i> Back
+            </a>
+            <br>
+
+            <h2>Edit Profile</h2>
+
+            <form class="form" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Render Django Form Fields Dynamically -->
+                {% for field in form %}
+                <div class="form__field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% if field.name == 'profile_image' %}
+                        <!-- Display existing image if available -->
+                        {% if form.instance.profile_image %}
+                        {% if form.instance.profile_image != "profiles/user-default.png" %}
+                            <img src="{{ form.instance.profile_image.url }}" alt="Profile Image" width="100" height="250">
+                            <button type="submit" name="clear_image" class="btn btn-danger">Clear Image</button>
+                        {% endif %}
+                            <style>
+                                #profile_image-clear_id { display: none; }
+                                label[for="profile_image-clear_id"] { display: none; }
+                            </style>
+                        <!-- Clear Image Button -->
+                        {% endif %}
+                        <!-- Display the File Upload Field -->
+                        {{ field }}
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <!-- Submit Button -->
+                <button class="btn btn--sub btn--lg" type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock content %}

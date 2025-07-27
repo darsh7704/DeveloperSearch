@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% block content %}
+<hr>
+<h1 style="text-align: center;">Delete project</h1>
+<hr>
+<!-- Main Section -->
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="{% url 'project' project.id %}"><i class="im im-angle-left">Back</i></a>
+            <br>
+            <form class="form" action = '' method="POST">
+                {% csrf_token %}
+                <p>Are your sure you want to delete this "<u>{{ object }}</u>"</p>
+                <a class="btn btn--sub btn--lg  my-md" href="{% url 'projects' %}"> No</a>
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Yes" />
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock content %}

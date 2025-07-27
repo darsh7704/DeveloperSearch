@@ -1,0 +1,113 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'uikit/styles/modules/_avatar.css' %}" />  <!-- Link the avatar CSS -->
+<!-- Main Section -->
+<main class="profile my-md">
+    <div class="container">
+      <div class="layout">
+        <div class="column column--1of3">
+          <div class="card text-center">
+            <div class="card__body dev">
+              <img class="avatar avatar--xl" src="{{ profs.profile_image.url }}" />
+              <h2 class="dev__name">{{ profs.name }}</h2>
+              <p class="dev__title">{{ profs.short_intro }}</p>
+              <p class="dev__location">Based in {{ profs.location }}</p>
+              <ul class="dev__social">
+                <li>
+                  {% if profs.social_github %}
+                   <a title="Github" href="{{ profs.social_github }}" target="_blank"><i class="im im-github"></i></a>
+                  {% endif %}
+                </li>
+                <li>
+                  {% if profs.Social_twitter %}
+                   <a title="Twitter" href="{{ profs.social_twitter }}" target="_blank"><i class="im im-twitter"></i></a>
+                  {% endif %}
+                </li>
+                <li>
+                  {% if profs.Social_linkedin %}
+                   <a title="LinkedIn" href="{{ profs.social_linkedin }}" target="_blank"><i class="im im-linkedin"></i></a>
+                  {% endif %}
+                </li>
+                <li>
+                  {% if profs.Social_youtube %}
+                   <a title="youtuber" href="{{ profs.social_youtube }}" target="_blank"><i class="im im-youtube"></i></a>
+                  {% endif %}
+                </li>
+                <li>
+                  {% if profs.social_website %}
+                   <a title="Personal Website" href="{{ profs.social_website }}" target="_blank"><i class="im im-globe"></i></a>
+                  {% endif %}
+                </li>
+              </ul>
+              {% if request.user == profs.user %}
+                 <a href="{% url 'edit_profile' %}" class="btn btn--sub btn--lg">Edit Profile</a>
+              {% else %}
+                 <a href="{% url 'chat' profs.user.username %}" class="btn btn--sub btn--lg">Message</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="column column--2of3">
+          <div class="devInfo">
+            <h3 class="devInfo__title">About Me</h3>
+            <p class="devInfo__about">
+              {{ profs.bio }}
+            </p>
+          </div>
+          <div class="devInfo">
+            <h3 class="devInfo__title">Skills</h3>
+            <div class="devInfo__skills">
+             {% for skill in topskills %}
+              <div class="devSkill">
+                <h4 class="devSkill__title">{{ skill.name }}</h4>
+                <p class="devSkill__info">
+                 {{ skill.description }}
+                </p>
+              </div>
+             {% endfor %}
+              <h3 class="devInfo__subtitle">Other Skills</h3>
+              {% for skill in otherskills %}
+              <div class="devInfo__otherSkills">
+                <span class="tag tag--pill tag--sub tag--lg">
+                  <small>{{ skill }}</small>
+                </span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="devInfo">
+            <h3 class="devInfo__title">Projects</h3>
+            <div class="grid grid--two">
+             {% for project in profs.project_set.all %}
+              <div class="column">
+                <div class="card project">
+                  <a href="{% url 'project' project.id %}" class="project">
+                    <div class="card__body">
+                      <h3 class="project__title">{{ project.title }}</h3>
+                      {% if project.featured_image %}
+                        <img class="project__thumbnail" src="{{ project.featured_image.url }}" alt="Project Image">
+                      {% else %}
+                        <img class="project__thumbnail" src="{% static 'images/default.jpg' %}" alt="Default Image">
+                      {% endif %}
+                      
+                      <p><a class="project__author" href="{% url 'user-profile' project.owner.id %}">{{ project.owner.name }}</a></p>
+                      <div class="singleProject__toolStack">
+                        {% for tag in project.tags.all %}
+                         <span class="tag tag--pill tag--sub">
+                           <small>{{ tag }}</small>
+                         </span>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+             {% endfor %}  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</main>
+{% endblock content %}

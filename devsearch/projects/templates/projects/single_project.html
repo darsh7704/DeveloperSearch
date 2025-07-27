@@ -1,0 +1,67 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %}Single Project{% endblock title %}
+
+{% block extra_css %}
+{% endblock extra_css %}
+
+{% block content %}
+<main class="singleProject my-md">
+  <div class="container">
+    <div class="layout">
+      <div class="column column--1of3">
+        <h3 class="singleProject__subtitle">Tags</h3>
+        <div class="singleProject__toolStack">
+         {% for tag in project.tags.all %}
+          <span class="tag tag--pill tag--sub tag--lg"><small>{{ tag }}</small></span>
+         {% endfor %}
+        </div>
+        {% if project.owner == request.user.profile %}
+          <a class="btn btn--sub btn--lg  my-md"  href="{% url 'update_project' project.id  %}">Update</a>
+          <a class="btn btn--sub btn--lg  my-md"  href="{% url 'delete_project' project.id  %}">Delete</a>
+        {% endif %} 
+      </div>
+      <div class="column column--2of3">
+        <h2 class="singleProject__title">{{ project.title }}</h2>
+        {% if project.featured_image %}
+          <img class="project__thumbnail" src="{{ project.featured_image.url }}" alt="Project Image">
+        {% else %}
+          <img class="project__thumbnail" src="{% static 'images/default.jpg' %}" alt="Default Image">
+        {% endif %}
+        <h6> Created by:<a href="{% url 'user-profile' project.owner.id %}" class="singleProject__developer">{{ project.owner.name }}</a> </h6>
+        <h3 class="singleProject__subtitle">About the Project</h3>
+        <div class="singleProject__info">{{ project.description }}</div>
+
+        <div class="comments">
+          <h3 class="singleProject__subtitle">Feedback</h3>
+          <!-- Comment submission form -->
+          {% if user.is_authenticated %}
+          <form class="form" action="#" method="POST">
+            {% csrf_token %}
+            <div class="form__field">
+                <label for="formInput#textarea">Comments:</label>
+                {{ comment_form.content }}  <!-- This will render the textarea for comments -->
+            </div>
+            <button class="btn btn--sub btn--lg" type="submit">Add Comment</button>  <!-- Submit button styled according to your design -->
+          </form>
+          {% else %}
+          <p>You need to be logged in to comment.</p>
+          {% endif %}
+
+          <div class="commentList">
+            <h3 class="card__headerTitle">Comments:-</h3>
+            {% for comment in comments %}
+            <div class="comment">
+              <p><strong>{{ comment.user.user.username }}:</strong> {{ comment.content }}</p>
+              <p><em>Posted on: {{ comment.created_at }}</em></p>
+            </div>
+            {% empty %}
+            <p>No comments yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}

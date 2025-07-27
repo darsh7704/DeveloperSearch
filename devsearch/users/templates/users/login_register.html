@@ -1,0 +1,82 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+<body>
+  <div class="auth">
+    <div class="card">
+      <div class="auth__header text-center">
+        <a href="/">
+          <img src="{% static 'images/icon.svg' %}" alt="icon" />
+        </a>
+
+        {% if page == 'register' %}
+          <h3>Account SignUp</h3>
+          <p>Create a new developer account</p>
+
+          <form action="{% url 'register' %}" method="post" class="form auth__form">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="form__field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in form.non_field_errors %}
+                     <p style="color: red;">{{ error }}</p>
+                {% endfor %}
+              </div>
+            {% endfor %}
+            <div class="auth__actions">
+              <input class="btn btn--sub btn--lg" type="submit" value="Sign Up" />
+            </div>
+          </form>
+          <div class="auth__alternative">
+            <p>Already have an account?</p>
+            <a href="{% url 'login' %}">Log In</a>
+          </div>
+
+        {% else %}
+          <h3>Account Login</h3>
+          <p>Hello Developer, Welcome Back!</p>
+
+          <form action="{% url 'login' %}" method="post" class="form auth__form">
+            {% csrf_token %}
+            <div class="form__field">
+              <label for="username">Username: </label>
+              <input
+                class="input input--text"
+                id="username"
+                type="text"
+                name="username"
+                placeholder="Enter your username..."
+                required
+              />
+            </div>
+
+            <div class="form__field">
+              <label for="password">Password: </label>
+              <input
+                class="input input--password"
+                id="password"
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <div class="auth__actions">
+              <input class="btn btn--sub btn--lg" type="submit" value="Log In" />
+              <a href="{% url 'reset_password' %}">Forgot Password?</a>
+            </div>
+          </form>
+
+          <div class="auth__alternative">
+            <p>Don’t have an account?</p>
+            <a href="{% url 'register' %}">Sign Up</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock content %}

@@ -1,0 +1,57 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+<main class="projects">
+    <section class="hero-section text-center">
+      <div class="container container--narrow">
+        <div class="hero-section__box">
+          <h2>Search for <span>Projects</span></h2>
+        </div>
+
+        <div class="hero-section__search">
+          <form class="form" action="{% url 'search_project' %}" method="get">
+            <div class="form__field">
+              <label for="formInput#search">Search By Projects </label>
+            </div>
+            <input class="input input--text" id="formInput#search" type="text" name="q"
+                placeholder="Search by Project Title" />
+            <br><br><br>
+            <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+          </form>
+        </div>
+      </div>
+    </section>
+    <!-- Search Result: DevList -->
+    <section class="projectsList">
+      <div class="container">
+        <div class="grid grid--three">
+          {% for project in projects %}
+          <div class="column">
+            <div class="card project">
+              <a href="{% url 'project' project.id %}" class="project">
+                <div class="card__body">
+                  <h1 class="singleProject__subtitle">{{ project.title }}</h1>
+                  {% if project.featured_image %}
+                    <img class="project__thumbnail" src="{{ project.featured_image.url }}" alt="Project Image">
+                  {% else %}
+                    <img class="project__thumbnail" src="{% static 'images/default.jpg' %}" alt="Default Image">
+                  {% endif %}
+                  <div class="singleProject__toolStack">
+                    {% for tag in project.tags.all %}
+                     <span class="tag tag--pill tag--sub">
+                       <small>{{ tag }}</small>
+                     </span>
+                    {% endfor %}
+                  </div>
+                  <p><a class="project__author" href="{% url 'user-profile' project.owner.id %}">By {{ project.owner.name }}</a></p>
+                </div>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock content %}
